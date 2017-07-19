@@ -51,7 +51,7 @@ WORKDIR $WORKDIR
 
 RUN npm install --production --quiet
 
-RUN sed "s/instances: 4,/instances: $INSTANCES,/g" process.yaml > process.yaml.tmp && mv process.yaml.tmp process.yaml
+RUN sed "s/instances: 1,/instances: $INSTANCES,/g" process.yaml > process.yaml.tmp && mv process.yaml.tmp process.yaml
 #install pm2
 RUN npm install pm2@latest -g --quiet
 
