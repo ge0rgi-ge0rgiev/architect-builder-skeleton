@@ -1,7 +1,7 @@
 'use strict';
-var beforeExit;
+let beforeExit;
 
-var terminator = function (sig) {
+const terminator = function (sig) {
     if (typeof sig === 'string') {
         console.log('%s: Received %s - terminating sample app ...',
             new Date(), sig);
@@ -21,7 +21,7 @@ var terminator = function (sig) {
     }
 };
 
-var setupTerminationHandlers = function () {
+const setupTerminationHandlers = function () {
     //  Process on exit and signals.
     process.on('exit', function () {
         terminator();
@@ -38,17 +38,10 @@ var setupTerminationHandlers = function () {
 };
 setupTerminationHandlers();
 
-var Builder = require('./builder');
+const Builder = require('./builder');
 
-var serverPath = 'abstract-server/abstract-server-config.js';
+module.exports = function build(serverPluginPath, done) {
+    const serverBuilder = new Builder(serverPluginPath);
 
-var serverBuilder = new Builder(serverPath);
-
-serverBuilder.build(function (err, app) {
-    if (err) {
-        throw err;
-    }
-    beforeExit = app.services.beforeExit;
-    global.app = app;
-    console.log('Application ' + app.name + ' ready! version: ' + app.version);
-});
+    serverBuilder.build(done);
+};
