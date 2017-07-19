@@ -1,0 +1,12 @@
+{
+  "main": "abstract-server.js",
+  "plugin": {
+    "name": "Abstract",
+    "version": "0.1"
+    "consumes": [
+      "server",
+      "lookingForPassportImports",
+      "lookingForApiImports"
+    ]
+  }
+}

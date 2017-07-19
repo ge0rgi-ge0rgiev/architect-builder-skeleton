@@ -1,0 +1,11 @@
+apps:
+    script   : server.js
+    instances: 1
+    exec_mode: cluster
+    max-memory-restart: 512M
+    max_restarts: 10
+    merge_logs: true
+    listen_timeout: 5000
+    log_date_format: YYYY-MM-DD HH:mm
+    log_file: combined.nodejs.log
+    err_file: error.nodejs.log
