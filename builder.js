@@ -1,40 +1,63 @@
 'use strict';
-var ok = require('okay');
-var architect = require('architect');
-var path = require('path');
-var _ = require('lodash');
+const ok = require('okay');
+const architect = require('architect');
+const path = require('path');
+const _ = require('lodash');
+const fs = require('fs');
+
+/**
+ * Goes through the given directory to return all files and folders recursively
+ * @author Ash Blue ash@blueashes.com
+ * @example getFilesRecursive('./folder/sub-folder');
+ * @requires Must include the file system module native to NodeJS, ex. var fs = require('fs');
+ * @param {string} folder Folder location to search through
+ * @returns {object} Nested tree of the found files
+ */
+function getFilesRecursive (folder) {
+    var fileContents = fs.readdirSync(folder),
+        fileTree = [],
+        stats;
+
+    fileContents.forEach(function (fileName) {
+        stats = fs.lstatSync(folder + '/' + fileName);
+
+        if (stats.isDirectory()) {
+            fileTree.push({
+                name: fileName,
+                children: getFilesRecursive(folder + '/' + fileName)
+            });
+        } else {
+            fileTree.push({
+                name: fileName
+            });
+        }
+    });
+
+    return fileTree;
+};
 
 /**
  * Builder for building an app using a definition file or dependency array
- * @param definition {String|[String]} .js file path or dependency array
  * @constructor
  */
-var Builder = function (definition) {
-    if (typeof definition === 'string') {
-        if (_.endsWith(definition, '.js')) {
-            this.definitionFile = definition;
-        } else {
-            this.consumes = [definition];
-        }
-    } else if (_.isArray(definition)) {
-        this.consumes = definition;
-    } else {
-        throw new Error('definition must be either a string of consume or an array of consumes');
-    }
-
+const Builder = function () {
 };
 
 Builder.prototype.build = function (done) {
-    var serverName, version, uiVersion;
-    var requiredConsumes;
-    var wholeServerConfig = [];
-    var consumes;
-    var configPath = path.join(__dirname, 'serverConfig.js');
-    var serverConfig = architect.loadConfig(configPath);
+    let serverName, version, uiVersion;
+    let requiredConsumes;
+    const wholeServerConfig = [];
+    let consumes;
+    const configPath = path.join(__dirname, 'serverConfig.js');
+    // const serverConfig = architect.loadConfig(configPath);
+    _.chain(['node_modules', 'plugins']).map(getFilesRecursive).union().each((dir) => {
+        console.log(dir);
+    });
+    /*
     if (this.definitionFile) {
-        var mainServerPath = path.join(__dirname, this.definitionFile);
-        var mainServerConfig = architect.loadConfig(mainServerPath);
-        var mainServer = mainServerConfig[0];
+        const mainServerPath = path.join(__dirname, this.definitionFile);
+        const mainServerConfig = architect.loadConfig(mainServerPath);
+        const mainServer = mainServerConfig[0];
         consumes = mainServer.consumes;
         serverName = mainServer.name;
         version = mainServer.version;
@@ -46,18 +69,18 @@ Builder.prototype.build = function (done) {
     }
     requiredConsumes = _.zipObject(consumes, _.times(consumes.length, _.constant(serverName)));
 
-    var depTree = {};
-    var pluginTree = {};
+    const depTree = {};
+    const pluginTree = {};
     _.each(serverConfig, function (plugin) {
         _.each(plugin.provides, function (provided) {
             depTree[provided] = plugin.consumes;
             pluginTree[provided] = plugin;
         });
     });
-    var allDependencies = {};
-    var resolvedDependencies = {};
+    const allDependencies = {};
+    const resolvedDependencies = {};
     while (!_.isEmpty(requiredConsumes)) {
-        var newRequired = {};
+        const newRequired = {};
         _.each(requiredConsumes, function (parent, consume) {
             allDependencies[consume] = parent;
             _.each(depTree[consume], function (dependency) {
@@ -72,9 +95,9 @@ Builder.prototype.build = function (done) {
         requiredConsumes = newRequired;
     }
 
-    var includedPlugins = {};
+    const includedPlugins = {};
     _.each(allDependencies, function (t, dependency) {
-        var plugin = pluginTree[dependency];
+        let plugin = pluginTree[dependency];
         if (!plugin) {
             if (pluginTree[t]) {
                 throw new Error('Cannot resolve dependency ' + dependency + ' in ' + pluginTree[t].packagePath);
@@ -82,7 +105,7 @@ Builder.prototype.build = function (done) {
                 throw new Error('Cannot resolve dependency ' + dependency + ' in main server ' + t);
             }
         }
-        var packagePath = plugin ? plugin.packagePath : null;
+        const packagePath = plugin ? plugin.packagePath : null;
         if (!includedPlugins[packagePath]) {
             wholeServerConfig.push(plugin);
             includedPlugins[packagePath] = true;
@@ -99,6 +122,7 @@ Builder.prototype.build = function (done) {
     catch (e) {
         console.log(e);
     }
+     */
 };
 
 module.exports = Builder;
