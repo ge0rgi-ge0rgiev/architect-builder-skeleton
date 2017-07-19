@@ -3,8 +3,6 @@
   "version": "0.0.1",
   "main": "server.js",
   "dependencies": {
-    "plugin-api-versions": "git+https://github.com/asotirov/plugin-api-versions.git",
-    "model-sql-user-zdravei": "git+https://github.com/m1bg/model-sql-user-zdravei.git",
     "architect": "^0.1.11",
     "lodash": "^4.13.1",
     "okay": "^1.0.0"

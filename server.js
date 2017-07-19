@@ -39,9 +39,13 @@ const setupTerminationHandlers = function () {
 setupTerminationHandlers();
 
 const Builder = require('./builder');
+const ok = require('okay');
 
 module.exports = function build(serverPluginPath, done) {
     const serverBuilder = new Builder(serverPluginPath);
 
-    serverBuilder.build(done);
+    serverBuilder.build(ok(function (app) {
+        beforeExit = _.get(app, 'services.beforeExit');
+        done(app);
+    }));
 };
