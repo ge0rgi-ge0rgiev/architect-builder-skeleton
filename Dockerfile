@@ -7,7 +7,8 @@ FROM phusion/baseimage:0.9.18
 #ENV NODEJS_IP localhost
 
 ENV INSTANCES 1
-ENV NODE_VERSION 6.7.0
+ENV NODE_VERSION 8.4.0
+ENV NODE_ENV production
 
 CMD ["/sbin/my_init"]
 
