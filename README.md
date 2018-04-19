@@ -1,12 +1,23 @@
-# angular-builder-skeleton for building new rapid development node applications
+# architect-builder-skeleton for building new rapid development node applications
 
-Node 6.7.0
+Node 8.9.4
 Ecma2016
 (no async/await)
 
-First project using it was matcher
+Autodiscovery of plugins in folder plugin and node_modules
 
-Makre sure to:
-
-1. Rename abstract-server in directory/fileNames and usages.
-2. Edit server.js to look for right abstract-server name for *serverPath*
+Plugins are the following format:
+  Example:
+  /node_modules
+  /plugins
+    /chat
+      -package.json
+        {
+          "name": "chat",
+          "version": "0.1.0",
+          "main": "chatPlugin.js",
+          "plugin": true
+        }
+      -chatPlugin.js
+        module.exports = ['chat', ({dependency1}) => {return { chat: {} }];
+        
