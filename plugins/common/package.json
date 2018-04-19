@@ -1,0 +1,6 @@
+{
+  "name": "common",
+  "version": "0.0.5",
+  "main": "common.js",
+  "plugin": true
+}

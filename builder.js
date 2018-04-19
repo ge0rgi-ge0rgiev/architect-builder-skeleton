@@ -1,20 +1,21 @@
 'use strict';
-const ok = require('okay');
-const architect = require('architect');
-const path = require('path');
-const _ = require('lodash');
-const fs = require('fs');
-const esprima = require('esprima');
+
+const ok = require('okay'),
+    architect = require('architect'),
+    path = require('path'),
+    _ = require('lodash'),
+    fs = require('fs'),
+    esprima = require('esprima');
 
 let beforeExit;
 
-const terminator = function (sig) {
+const terminator = (sig) => {
     if (typeof sig === 'string') {
         console.log('%s: Received %s - terminating sample app ...',
             new Date(), sig);
         if (beforeExit) {
             console.log('%s: Executing cleanup before exit.', new Date());
-            beforeExit.emit('exit', function (e) {
+            beforeExit.emit('exit', (e) => {
                 if (e) {
                     console.error(e);
                 }
@@ -28,17 +29,17 @@ const terminator = function (sig) {
     }
 };
 
-const setupTerminationHandlers = function () {
+const setupTerminationHandlers = () => {
     //  Process on exit and signals.
-    process.on('exit', function () {
+    process.on('exit', () => {
         terminator();
     });
     process.on('error', console.error.bind(console));
     // Removed 'SIGPIPE' from the list - bugz 852598.
     ['SIGHUP', 'SIGINT', 'SIGQUIT', 'SIGILL', 'SIGTRAP', 'SIGABRT',
         'SIGBUS', 'SIGFPE', 'SIGUSR1', 'SIGSEGV', 'SIGUSR2', 'SIGTERM'
-    ].forEach(function (element, index, array) {
-        process.on(element, function () {
+    ].forEach((element, index, array) => {
+        process.on(element, () => {
             terminator(element);
         });
     });
@@ -53,12 +54,12 @@ setupTerminationHandlers();
  * @param {string} folder Folder location to search through
  * @returns {object} Nested tree of the found files
  */
-function getFilesRecursive(folder) {
+const getFilesRecursive = (folder) => {
     const fileContents = fs.readdirSync(folder),
         fileTree = [];
     let stats;
 
-    fileContents.forEach(function (fileName) {
+    fileContents.forEach(fileName => {
         stats = fs.lstatSync(folder + '/' + fileName);
 
         if (stats.isDirectory()) {
@@ -232,8 +233,8 @@ class Builder {
             setup: p.setup
         }));
 
-        _.each(serverConfig, function (plugin) {
-            _.each(plugin.provides, function (provided) {
+        _.each(serverConfig, plugin => {
+            _.each(plugin.provides, provided => {
                 depTree[provided] = plugin.consumes;
                 pluginTree[provided] = plugin;
             });
@@ -242,9 +243,9 @@ class Builder {
         const resolvedDependencies = {};
         while (!_.isEmpty(requiredConsumes)) {
             const newRequired = {};
-            _.each(requiredConsumes, function (parent, consume) {
+            _.each(requiredConsumes, (parent, consume) => {
                 allDependencies[consume] = parent;
-                _.each(depTree[consume], function (dependency) {
+                _.each(depTree[consume], dependency => {
                     allDependencies[dependency] = consume;
                     if (!resolvedDependencies[dependency]) {
                         newRequired[dependency] = consume;
@@ -259,7 +260,7 @@ class Builder {
         const includedPlugins = {};
         let wholeServerConfig = [];
 
-        _.each(allDependencies, function (t, dependency) {
+        _.each(allDependencies, (t, dependency) => {
             if (dependency === 'imports') {
                 return;
             }
@@ -331,7 +332,7 @@ class Builder {
         };
 
         return new Promise((resolve, reject) => {
-            architect.createApp(wholeServerConfig, ok(reject, function (app) {
+            architect.createApp(wholeServerConfig, ok(reject, (app) => {
                 app.name = serverName;
                 beforeExit = _.get(app, 'services.beforeExit');
                 global.app = app;

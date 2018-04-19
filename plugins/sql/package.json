@@ -1,0 +1,6 @@
+{
+  "name": "sql",
+  "version": "0.0.2",
+  "main": "sql.js",
+  "plugin": true
+}

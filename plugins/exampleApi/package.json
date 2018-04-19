@@ -1,0 +1,6 @@
+{
+  "name": "exampleApi",
+  "version": "0.0.1",
+  "main": "exampleApi.js",
+  "plugin": true
+}

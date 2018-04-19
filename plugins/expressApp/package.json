@@ -1,0 +1,6 @@
+{
+  "name": "expressApp",
+  "version": "0.0.1",
+  "main": "expressApp.js",
+  "plugin": true
+}
