@@ -2,12 +2,15 @@
   "name": "architect-builder-skeleton",
   "version": "0.0.2",
   "main": "main.js",
+  "architect": true,
   "dependencies": {
     "architect": "^0.1.11",
+    "esprima": "^4.0.0",
     "lodash": "^4.13.1",
     "okay": "^1.0.0"
   },
+  "server": [],
   "engines": {
-    "node": ">=8.4.0"
+    "node": ">=8.9.1"
   }
 }

@@ -1,0 +1,19 @@
+{
+  "compileOnSave": true,
+  "compilerOptions": {
+    "target": "es2017",
+    "types" : ["node", "lodash", "express"],
+    "moduleResolution": "node",
+    "module": "commonjs",
+    "declaration": true,
+    "noImplicitAny": true,
+    "removeComments": true,
+    "preserveConstEnums": true,
+    "sourceMap": true,
+    "strictNullChecks": true,
+    "lib": ["es2015"]
+  },
+  "include": [
+    "plugins/**/*.ts"
+  ]
+}
